@@ -8,6 +8,7 @@
 #include <math.h>
 #include <limits.h>
 #include <assert.h>
+#include "debug.h"
 
 /* used for testing performance of each algorithm, and the runtime will increase 
  * exponentially with recursion solution, so better start with some small number 
@@ -29,7 +30,9 @@ int fib_recursive(int n)
 
 void test_fib_recursive(void)
 {
+    print_func_name();
     printf("\tfib(%d): %d\n", NUM, fib_recursive(NUM));
+    MEAS_RUNTIME(fib_recursive, NUM); 
 }
 
 /*****************************************************************************
@@ -56,7 +59,9 @@ int fib_iterative(int n)
 
 void test_fib_iterative(void)
 {
+    print_func_name();
     printf("\tfib(%d): %d\n", NUM, fib_iterative(NUM));
+    MEAS_RUNTIME(fib_iterative, NUM); 
 }
 
 /*****************************************************************************
