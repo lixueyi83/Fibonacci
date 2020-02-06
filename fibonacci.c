@@ -14,7 +14,7 @@
  * exponentially with recursion solution, so better start with some small number 
  * like, 20 or 30. Tested on my PC, if NUM=50, the runtime could be more than 
  * minutes. */
-const int NUM = 45;
+const int NUM = 30;
 
 
 typedef struct ListNode
@@ -37,7 +37,7 @@ void printList(ListNode* head)
         printf("%d -> ", curr->val);
         curr = curr->next;
     }
-    printf("NULL");
+    printf("null\n");
 }
 
 /*****************************************************************************
@@ -66,7 +66,7 @@ ListNode* convertNumtoList(long long num)
         int digit = num%10;
         AppendDigitToList(&head, digit);
         num /= 10;
-    }
+    };
     return head;
 }
 
@@ -79,12 +79,12 @@ void testConvertNumToList(void)
 }
 
 /*****************************************************************************
- * Function: addTwoNumbers
- * Description: add two numbers from two linked lists
+ * Function: addTwoNumbersNew
+ * Description: add/combine number from l2 to l1 and return l1
  * Time Complexity: 
  * Space Complexity:
  */
-ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) 
+ListNode* addTwoNumbersCombine(ListNode* l1, ListNode* l2) 
 {
     ListNode* head = l1;
     
@@ -129,8 +129,79 @@ ListNode* addTwoNumbers(ListNode* l1, ListNode* l2)
     return head;
 }
 
+/*****************************************************************************
+ * Function: addTwoNumbersNew
+ * Description: add number from l1 and l2 to a new linked list and return it
+ * Time Complexity: 
+ * Space Complexity:
+ */
+void appendNode(ListNode** head, int n)
+{
+    ListNode* newNode = (ListNode*)malloc(sizeof(ListNode));
+    newNode->val = n;
+    newNode->next = NULL;
+
+    ListNode** localRef = head;
+    while(*localRef != NULL)
+        localRef = &(*localRef)->next;
+    *localRef = newNode;
+}
+
+ListNode* addTwoNumbersNew(ListNode* l1, ListNode* l2) 
+{ 
+    if(!l1 && !l2) return NULL;
+    if(l1 && !l2) return l1;
+    if(!l1 && l2) return l2;
+  
+    ListNode* head = NULL;
+    /* 1. add-merge value from l2 to l1, when both l1 and l2 are valid */
+    while(l1 && l2){
+        appendNode(&head, l1->val + l2->val);
+        l1 = l1->next;
+        l2 = l2->next;
+    }
+    
+    /* 2. adding remain part of l2 to l1 if l2 is longer than l1, and if l1 is
+     * longer l2 nothing needs to be done */
+    while(l1){
+        appendNode(&head, l1->val);
+        l1 = l1->next;
+    }
+
+    while(l2){
+        appendNode(&head, l2->val);
+        l2 = l2->next;
+    }
+
+    /* 3. 2nd traverse to add carry from curr node to next node */
+    ListNode* curr = head;
+    while(curr->next != NULL){
+        if(curr->val >= 10){
+            curr->val -= 10;
+            curr->next->val += 1;
+        }
+        curr = curr->next;
+    }
+    
+    /* 4. handling special case for the last node only when l1 and l2 have
+     * same number of nodes and also when sum of two last nodes is >= 10 */
+    if(curr->val >= 10){
+        curr->val -= 10;
+        appendNode(&head, 1);
+    }
+    
+    return head;
+}
+
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2)
+{
+    return addTwoNumbersNew(l1, l2);
+    return addTwoNumbersCombine(l1, l2);
+}
 void testAddTwoNumbers(void)
 {
+    testConvertNumToList();
+
     print_func_name();
     ListNode* l1 = NULL;
     ListNode* l2 = NULL;
@@ -142,15 +213,16 @@ void testAddTwoNumbers(void)
     printList(l1); printf("\n");
     printList(l2); printf("\n");
 
-    ListNode* l3 = addTwoNumbers(l1, l2);
-    printList(l3);
+    ListNode* l3 = NULL;
+    l3 = addTwoNumbers(l1, l2);
+    printList(l3); 
 }
 
 /*****************************************************************************
- * Function: fibonacci(int n)
+ * Function: fib_recursive(int n)
  * Description: recursive solution, top-down
- * Time Complexity: 
- * Space Complexity:
+ * Time Complexity: O(2^N) 
+ * Space Complexity: O(2^N)
  */
 /* long long fib_recursive(ListNode* head, int n) */
 long long fib_recursive(int n)
@@ -167,10 +239,31 @@ void test_fib_recursive(void)
 }
 
 /*****************************************************************************
+ * Function: fib_recursive_memo(int n)
+ * Description: recursive solution, top-down with memoriation
+ * Time Complexity: O(N) 
+ * Space Complexity: O(N)
+ */
+long long A[10];
+long long fib_recursive_memo(int n)
+{
+    if(n < 2) return A[n] = n;
+    if(A[n] > 0) return A[n];
+    return A[n] = fib_recursive_memo(n-1) + fib_recursive_memo(n-2);
+}
+
+void test_fib_recursive_memo(void)
+{
+    print_func_name();
+    printf("\tfib(%d): %lld\n", NUM, fib_recursive_memo(NUM));
+    MEAS_RUNTIME(fib_recursive_memo, NUM); 
+}
+
+/*****************************************************************************
  * Function: fibonacci(int n)
  * Description: iterative solution, dp[n] buffer used for iteration
- * Time Complexity: 
- * Space Complexity:
+ * Time Complexity: O(N)
+ * Space Complexity: O(N)
  */
 long long fib_iterative(int n)
 {
@@ -187,12 +280,39 @@ long long fib_iterative(int n)
     return dp[n];
 }
 
-
 void test_fib_iterative(void)
 {
     print_func_name();
     printf("\tfib(%d): %lld\n", NUM, fib_iterative(NUM));
     MEAS_RUNTIME(fib_iterative, NUM); 
+}
+
+/*****************************************************************************/
+ListNode* dp[100];
+
+ListNode* fib(int n)
+{
+    if(dp[n] != NULL) return dp[n];
+
+    if(n<2) return dp[n] = convertNumtoList(n);
+
+    /* dp[n] = addTwoNumbers(fib(n-1), fib(n-2)); */
+    /* printList(dp[n]); */
+    ListNode* l1 = fib(n-1); printList(l1);
+    ListNode* l2 = fib(n-2); printList(l2);
+    addTwoNumbersNew(l1, l2);
+
+    return dp[n];
+}
+
+void testFib(void)
+{
+    print_func_name();
+    ListNode* head = fib(4);
+
+    printf("\n\n");
+    for(int i=0; i<5; i++)
+        printList(head);
 }
 
 /*****************************************************************************
@@ -201,9 +321,10 @@ void test_fib_iterative(void)
 int main(int argc, char* argv[])
 {
     testAddTwoNumbers();
-    testConvertNumToList();
     /* test_fib_recursive(); */
-    test_fib_iterative();
+    /* test_fib_recursive_memo(); */
+    /* test_fib_iterative(); */
+    /* testFib(); */
 
     return 0;
 }
