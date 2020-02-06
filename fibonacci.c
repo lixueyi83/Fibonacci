@@ -58,6 +58,26 @@ void AppendDigitToList(ListNode** head, int digit)
     *localRef = newNode;
 }
 
+ListNode* convertNumtoList(long long num)
+{
+    ListNode* head = NULL;
+
+    while(num){
+        int digit = num%10;
+        AppendDigitToList(&head, digit);
+        num /= 10;
+    }
+    return head;
+}
+
+void testConvertNumToList(void)
+{
+    print_func_name();
+    long long num = 112233445566778899;
+    ListNode* head = convertNumtoList(num);
+    printList(head);
+}
+
 /*****************************************************************************
  * Function: addTwoNumbers
  * Description: add two numbers from two linked lists
@@ -132,6 +152,7 @@ void testAddTwoNumbers(void)
  * Time Complexity: 
  * Space Complexity:
  */
+/* long long fib_recursive(ListNode* head, int n) */
 long long fib_recursive(int n)
 {
     if(n < 2) return n;
@@ -180,6 +201,7 @@ void test_fib_iterative(void)
 int main(int argc, char* argv[])
 {
     testAddTwoNumbers();
+    testConvertNumToList();
     /* test_fib_recursive(); */
     test_fib_iterative();
 
