@@ -25,7 +25,7 @@
     funcs(NUM);                                         \
     ee = (double)clock()/CLOCKS_PER_SEC;                \
     timediff = ee - ss;                                 \
-    printf("\t%s(%d) \e[1;34mRuntime(cpu_time): %.6f sec\033[0m\n", #funcs, NUM, timediff); \
+    printf("\t \e[1;34mRuntime: %.6f sec\033[0m\n", timediff); \
 }
 
 #endif
