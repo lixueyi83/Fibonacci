@@ -14,8 +14,15 @@
  * storage type can hold, if we want to store fib(93) or beyond we have to put
  * it into a special data structure to store those huge numbers. This is exactly 
  * why we introduce linkedlist here below. 
- * fib(100): 354224848179261915075 */
-const int NUM = 100;
+ *
+ * Here below is the corresponding fib number that we are expecting and the
+ * bigger the number the more memory it is required for storing those numbers
+ * in memory which are allocated from heap:
+ * fib(100): 354224848179261915075 
+ * fib(200): 280571172992510140037611932413038677189525 
+ * fib(300): 222232244629420445529739893461909967206666939096499764990979600
+ */
+const int NUM = 300;
 
 typedef struct ListNode
 {
