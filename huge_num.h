@@ -18,10 +18,9 @@ typedef struct ListNode
 }ListNode;
 
 
-void printList(ListNode* head);
-void printListBackward(ListNode* head);
-void AppendDigitToList(ListNode** head, int digit);
+void printNumOfList(ListNode* head);
 void appendNode(ListNode** head, int n);
+ListNode* deepCopyList(ListNode* head);
 ListNode* convertNumtoList(long long num);
 ListNode* addTwoNumbers(ListNode* l1, ListNode* l2);
 void testHugeNumbers(void);

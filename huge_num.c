@@ -30,11 +30,29 @@ void printList(ListNode* head)
     printf("null\n");
 }
 
-void printListBackward(ListNode* head)
+/*****************************************************************************
+ * Function: printNumOfList
+ * Description: print number from least significant digit to most significant
+ *              digit, in linked list format
+ * Time Complexity: 
+ * Space Complexity:
+ */
+void printNumOfList(ListNode* head)
 {
     if(head == NULL) return;
-    printListBackward(head->next);
+    printNumOfList(head->next);
     printf("%d", head->val);
+}
+
+ListNode* deepCopyList(ListNode* head)
+{
+    ListNode* ret = NULL;
+    ListNode* curr = head;
+    while(curr != NULL){
+        appendNode(&ret, curr->val);
+        curr = curr->next;
+    }
+    return ret;
 }
 
 /*****************************************************************************
@@ -73,15 +91,6 @@ void testConvertNumToList(void)
     long long num = 112233445566778899;
     ListNode* head = convertNumtoList(num);
     printList(head);
-    num = 111111111;
-    ListNode* l1 = convertNumtoList(num);
-    printList(l1);
-    num = 222222222;
-    ListNode* l2 = convertNumtoList(num);
-    printList(l2);
-    num = 333333333;
-    ListNode* l3 = convertNumtoList(num);
-    printList(l3);
 }
 
 /*****************************************************************************

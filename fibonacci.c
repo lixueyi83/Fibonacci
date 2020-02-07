@@ -23,7 +23,8 @@
  * fib(200): 280571172992510140037611932413038677189525 
  * fib(300): 222232244629420445529739893461909967206666939096499764990979600
  */
-const int NUM = 30;
+const int NUM = 300;
+const int NUM_SMALL = 92;
 
 /*****************************************************************************
  * Function: fibRecursiveForSmallNums(int n)
@@ -41,8 +42,8 @@ long long fibRecursiveForSmallNums(int n)
 void testFibRecursiveForSmallNums(void)
 {
     print_func_name();
-    printf("\tfib(%d): %lld\n", NUM, fibRecursiveForSmallNums(NUM));
-    MEAS_RUNTIME(fibRecursiveForSmallNums, NUM); 
+    printf("\tfib(%d): %lld\n", NUM_SMALL, fibRecursiveForSmallNums(NUM_SMALL));
+    MEAS_RUNTIME(fibRecursiveForSmallNums, NUM_SMALL); 
 }
 
 /*****************************************************************************
@@ -63,8 +64,8 @@ long long fibRecursiveMemoForSmallNums(int n)
 void testFibRecursiveMemoForSmallNums(void)
 {
     print_func_name();
-    printf("\tfib(%d): %lld\n", NUM, fibRecursiveMemoForSmallNums(NUM));
-    MEAS_RUNTIME(fibRecursiveMemoForSmallNums, NUM); 
+    printf("\tfib(%d): %lld\n", NUM_SMALL, fibRecursiveMemoForSmallNums(NUM_SMALL));
+    MEAS_RUNTIME(fibRecursiveMemoForSmallNums, NUM_SMALL); 
 }
 
 /*****************************************************************************
@@ -93,11 +94,11 @@ void testFibRecursive(void)
 {
     print_func_name();
     ListNode* head = fibRecursiveMemo(NUM);
-    printf("\tfib(%d): ", NUM); printListBackward(head);
+    printf("\tfib(%d): ", NUM); printNumOfList(head);
 }
 
 /*****************************************************************************
- * Function: fibonacci(int n)
+ * Function: fibIterativeForSmallNums(int n)
  * Description: iterative solution, dp[n] buffer used for iteration
  * Time Complexity: O(N)
  * Space Complexity: O(N)
@@ -120,39 +121,34 @@ long long fibIterativeForSmallNums(int n)
 void testFibIterativeForSmallNums(void)
 {
     print_func_name();
-    printf("\tfib(%d): %lld\n", NUM, fibIterativeForSmallNums(NUM));
-    MEAS_RUNTIME(fibIterativeForSmallNums, NUM); 
+    printf("\tfib(%d): %lld\n", NUM_SMALL, fibIterativeForSmallNums(NUM_SMALL));
+    MEAS_RUNTIME(fibIterativeForSmallNums, NUM_SMALL); 
 }
 
+/*****************************************************************************
+ * Function: fibIterativeForSmallNumsDP(int n)
+ * Description: iterative solution, dp[n] buffer used for iteration
+ * Time Complexity: O(N)
+ * Space Complexity: O(N)
+ */
 long long fibIterativeForSmallNumsDP(int n)
 {
-    if(n < n) return n;
+    if(n < 2) return n;
 
-    int prev2 = 0, prev1 = 1, curr;
+    long long prev2 = 0, prev1 = 1, curr;
     for(int i=2; i<n+1; i++){
         curr = prev1 + prev2;
         prev2 = prev1;
         prev1 = curr;
     }
-    return prev1;
+    return curr;
 }
 
 void testFibIterativeForSmallNumsDP(void)
 {
     print_func_name();
-    printf("\tfib(%d): %lld\n", NUM, fibIterativeForSmallNumsDP(NUM));
-    MEAS_RUNTIME(fibIterativeForSmallNumsDP, NUM); 
-}
-
-ListNode* deepCopyList(ListNode* head)
-{
-    ListNode* ret = NULL;
-    ListNode* curr = head;
-    while(curr != NULL){
-        appendNode(&ret, curr->val);
-        curr = curr->next;
-    }
-    return ret;
+    printf("\tfib(%d): %lld\n", NUM_SMALL, fibIterativeForSmallNumsDP(NUM_SMALL));
+    MEAS_RUNTIME(fibIterativeForSmallNumsDP, NUM_SMALL); 
 }
 
 ListNode* fibIterativeDP(int n)
@@ -177,7 +173,7 @@ void testFibIterativeDP(void)
 {
     print_func_name();
     ListNode* head = fibIterativeDP(NUM);
-    printf("\tfib(%d): ", NUM); printListBackward(head);
+    printf("\tfib(%d): ", NUM); printNumOfList(head);
 }
 
 /*****************************************************************************
@@ -186,7 +182,7 @@ void testFibIterativeDP(void)
 int main(int argc, char* argv[])
 {
     /* testFibRecursiveForSmallNums(); */
-    /* testFibRecursiveMemoForSmallNums(); */
+    testFibRecursiveMemoForSmallNums();
     testFibIterativeForSmallNums();
     testFibIterativeForSmallNumsDP();
     testFibRecursive();
