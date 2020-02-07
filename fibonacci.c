@@ -10,12 +10,12 @@
 #include <assert.h>
 #include "debug.h"
 
-/* used for testing performance of each algorithm, and the runtime will increase 
- * exponentially with recursion solution, so better start with some small number 
- * like, 20 or 30. Tested on my PC, if NUM=50, the runtime could be more than 
- * minutes. */
-const int NUM = 30;
-
+/* fib(92) = 7540113804746346429, which is maximum number that a long long int
+ * storage type can hold, if we want to store fib(93) or beyond we have to put
+ * it into a special data structure to store those huge numbers. This is exactly 
+ * why we introduce linkedlist here below. 
+ * fib(100): 354224848179261915075 */
+const int NUM = 100;
 
 typedef struct ListNode
 {
@@ -32,12 +32,20 @@ typedef struct ListNode
  */
 void printList(ListNode* head)
 {
+    printf("\t");
     ListNode* curr = head;
     while(curr != NULL){
         printf("%d -> ", curr->val);
         curr = curr->next;
     }
     printf("null\n");
+}
+
+void printListBackward(ListNode* head)
+{
+    if(head == NULL) return;
+    printListBackward(head->next);
+    printf("%d", head->val);
 }
 
 /*****************************************************************************
@@ -76,6 +84,15 @@ void testConvertNumToList(void)
     long long num = 112233445566778899;
     ListNode* head = convertNumtoList(num);
     printList(head);
+    num = 111111111;
+    ListNode* l1 = convertNumtoList(num);
+    printList(l1);
+    num = 222222222;
+    ListNode* l2 = convertNumtoList(num);
+    printList(l2);
+    num = 333333333;
+    ListNode* l3 = convertNumtoList(num);
+    printList(l3);
 }
 
 /*****************************************************************************
@@ -200,8 +217,6 @@ ListNode* addTwoNumbers(ListNode* l1, ListNode* l2)
 }
 void testAddTwoNumbers(void)
 {
-    testConvertNumToList();
-
     print_func_name();
     ListNode* l1 = NULL;
     ListNode* l2 = NULL;
@@ -244,7 +259,7 @@ void test_fib_recursive(void)
  * Time Complexity: O(N) 
  * Space Complexity: O(N)
  */
-long long A[10];
+long long A[100];
 long long fib_recursive_memo(int n)
 {
     if(n < 2) return A[n] = n;
@@ -255,7 +270,7 @@ long long fib_recursive_memo(int n)
 void test_fib_recursive_memo(void)
 {
     print_func_name();
-    printf("\tfib(%d): %lld\n", NUM, fib_recursive_memo(NUM));
+    printf("\tfib_recursive_memo(%d): %lld\n", NUM, fib_recursive_memo(NUM));
     MEAS_RUNTIME(fib_recursive_memo, NUM); 
 }
 
@@ -269,7 +284,7 @@ long long fib_iterative(int n)
 {
     if(n < 2) return n;
 
-    int dp[n+1];
+    long long dp[n+1];
     dp[0] = 0;
     dp[1] = 1;
 
@@ -298,21 +313,17 @@ ListNode* fib(int n)
 
     /* dp[n] = addTwoNumbers(fib(n-1), fib(n-2)); */
     /* printList(dp[n]); */
-    ListNode* l1 = fib(n-1); printList(l1);
-    ListNode* l2 = fib(n-2); printList(l2);
-    addTwoNumbersNew(l1, l2);
-
+    ListNode* l1 = fib(n-1);
+    ListNode* l2 = fib(n-2);
+    dp[n] = addTwoNumbersNew(l1, l2);
     return dp[n];
 }
 
 void testFib(void)
 {
     print_func_name();
-    ListNode* head = fib(4);
-
-    printf("\n\n");
-    for(int i=0; i<5; i++)
-        printList(head);
+    ListNode* head = fib(NUM);
+    printf("\tfib(%d): ", NUM); printListBackward(head);
 }
 
 /*****************************************************************************
@@ -320,11 +331,12 @@ void testFib(void)
  */
 int main(int argc, char* argv[])
 {
-    testAddTwoNumbers();
+    /* testConvertNumToList(); */
+    /* testAddTwoNumbers(); */
     /* test_fib_recursive(); */
     /* test_fib_recursive_memo(); */
-    /* test_fib_iterative(); */
-    /* testFib(); */
+    test_fib_iterative();
+    testFib();
 
     return 0;
 }
