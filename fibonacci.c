@@ -103,59 +103,10 @@ void testConvertNumToList(void)
 }
 
 /*****************************************************************************
- * Function: addTwoNumbersNew
- * Description: add/combine number from l2 to l1 and return l1
- * Time Complexity: 
- * Space Complexity:
- */
-ListNode* addTwoNumbersCombine(ListNode* l1, ListNode* l2) 
-{
-    ListNode* head = l1;
-    
-    /* 1. add-merge value from l2 to l1, when both l1 and l2 are valid */
-    ListNode *prev = NULL, *prev2 = NULL;
-    while(l1 && l2){
-        l1->val += l2->val;
-        /* keep track of previous node which will be used to connect remain
-         * part of l2 */
-        prev = l1, prev2 = l2;
-        l1 = l1->next;
-        l2 = l2->next;
-    }
-    
-    /* 2. adding remain part of l2 to l1 if l2 is longer than l1, and if l1 is
-     * longer l2 nothing needs to be done */
-    if(l1 == NULL){
-        prev->next = l2;
-    }
-    
-    /* 3. 2nd traverse to add carry from curr node to next node */
-    ListNode* curr = head;
-    prev = NULL;
-    while(curr->next!= NULL){
-        if(curr->val >= 10){
-            curr->next->val += 1;
-            curr->val -= 10;
-        }
-        curr = curr->next;
-    }
-    
-    /* 4. handling special case for the last node only when l1 and l2 have
-     * same number of nodes and also when sum of two last nodes is >= 10 */
-    if(curr->val >= 10){
-        curr->val -= 10;
-        ListNode* node = (ListNode*)malloc(sizeof(ListNode));
-        node->val = 1;
-        node->next = NULL;
-        curr->next = node;
-    }
-    
-    return head;
-}
-
-/*****************************************************************************
- * Function: addTwoNumbersNew
- * Description: add number from l1 and l2 to a new linked list and return it
+ * Function: appendNode
+ * Description: append digit to linked list, we store the digit of number
+ *              backwards, for example, 12345 will be stored in linked list
+ *              as: head -> 5 -> 4 -> 3 -> 2 -> 1 -> null
  * Time Complexity: 
  * Space Complexity:
  */
@@ -171,7 +122,13 @@ void appendNode(ListNode** head, int n)
     *localRef = newNode;
 }
 
-ListNode* addTwoNumbersNew(ListNode* l1, ListNode* l2) 
+/*****************************************************************************
+ * Function: addTwoNumbers
+ * Description: add number from l1 and l2 to a new linked list and return it
+ * Time Complexity: 
+ * Space Complexity:
+ */
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) 
 { 
     if(!l1 && !l2) return NULL;
     if(l1 && !l2) return l1;
@@ -217,11 +174,6 @@ ListNode* addTwoNumbersNew(ListNode* l1, ListNode* l2)
     return head;
 }
 
-ListNode* addTwoNumbers(ListNode* l1, ListNode* l2)
-{
-    return addTwoNumbersNew(l1, l2);
-    return addTwoNumbersCombine(l1, l2);
-}
 void testAddTwoNumbers(void)
 {
     print_func_name();
@@ -282,6 +234,35 @@ void test_fib_recursive_memo(void)
 }
 
 /*****************************************************************************
+ * Function: hugeFib_recursive(int n)
+ * Description: recursion with memorization, and to deal with huge numbers that 
+ *              has more than 19 digits which is maximum length of long long 
+ *              storage type, we have to use some other data structures, and
+ *              here we chose linked list, each node will keep one digit of
+ *              the huge number and the first node is the least significant
+ *              digit and last node is the most significant digit.
+ * Time Complexity: O(N)
+ * Space Complexity: O(N)
+ */
+ListNode* dp[100];
+ListNode* hugeFib_recursive(int n)
+{
+    if(dp[n] != NULL) 
+        return dp[n];
+    if(n<2) 
+        return dp[n] = convertNumtoList(n);
+    return 
+        dp[n] = addTwoNumbers(hugeFib_recursive(n-1), hugeFib_recursive(n-2));
+}
+
+void testFibHuge(void)
+{
+    print_func_name();
+    ListNode* head = hugeFib_recursive(NUM);
+    printf("\tfib(%d): ", NUM); printListBackward(head);
+}
+
+/*****************************************************************************
  * Function: fibonacci(int n)
  * Description: iterative solution, dp[n] buffer used for iteration
  * Time Complexity: O(N)
@@ -309,30 +290,6 @@ void test_fib_iterative(void)
     MEAS_RUNTIME(fib_iterative, NUM); 
 }
 
-/*****************************************************************************/
-ListNode* dp[100];
-
-ListNode* fib(int n)
-{
-    if(dp[n] != NULL) return dp[n];
-
-    if(n<2) return dp[n] = convertNumtoList(n);
-
-    /* dp[n] = addTwoNumbers(fib(n-1), fib(n-2)); */
-    /* printList(dp[n]); */
-    ListNode* l1 = fib(n-1);
-    ListNode* l2 = fib(n-2);
-    dp[n] = addTwoNumbersNew(l1, l2);
-    return dp[n];
-}
-
-void testFib(void)
-{
-    print_func_name();
-    ListNode* head = fib(NUM);
-    printf("\tfib(%d): ", NUM); printListBackward(head);
-}
-
 /*****************************************************************************
  * main entrance
  */
@@ -343,7 +300,7 @@ int main(int argc, char* argv[])
     /* test_fib_recursive(); */
     /* test_fib_recursive_memo(); */
     test_fib_iterative();
-    testFib();
+    testFibHuge();
 
     return 0;
 }
