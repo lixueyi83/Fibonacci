@@ -22,7 +22,7 @@
  * fib(200): 280571172992510140037611932413038677189525 
  * fib(300): 222232244629420445529739893461909967206666939096499764990979600
  */
-const int NUM = 300;
+const int NUM = 30;
 
 typedef struct ListNode
 {
@@ -193,48 +193,49 @@ void testAddTwoNumbers(void)
 }
 
 /*****************************************************************************
- * Function: fib_recursive(int n)
+ * Function: fibRecursiveForSmallNums(int n)
  * Description: recursive solution, top-down
  * Time Complexity: O(2^N) 
  * Space Complexity: O(2^N)
  */
-/* long long fib_recursive(ListNode* head, int n) */
-long long fib_recursive(int n)
+/* long long fibRecursiveForSmallNums(ListNode* head, int n) */
+long long fibRecursiveForSmallNums(int n)
 {
     if(n < 2) return n;
-    return fib_recursive(n-1) + fib_recursive(n-2);
+    return fibRecursiveForSmallNums(n-1) + fibRecursiveForSmallNums(n-2);
 }
 
-void test_fib_recursive(void)
+void testFibRecursiveForSmallNums(void)
 {
     print_func_name();
-    printf("\tfib(%d): %lld\n", NUM, fib_recursive(NUM));
-    MEAS_RUNTIME(fib_recursive, NUM); 
+    printf("\tfib(%d): %lld\n", NUM, fibRecursiveForSmallNums(NUM));
+    MEAS_RUNTIME(fibRecursiveForSmallNums, NUM); 
 }
 
 /*****************************************************************************
- * Function: fib_recursive_memo(int n)
+ * Function: fibRecursiveMemoForSmallNums(int n)
  * Description: recursive solution, top-down with memoriation
  * Time Complexity: O(N) 
  * Space Complexity: O(N)
  */
 long long A[100];
-long long fib_recursive_memo(int n)
+long long fibRecursiveMemoForSmallNums(int n)
 {
     if(n < 2) return A[n] = n;
     if(A[n] > 0) return A[n];
-    return A[n] = fib_recursive_memo(n-1) + fib_recursive_memo(n-2);
+    return A[n] = fibRecursiveMemoForSmallNums(n-1) + 
+                  fibRecursiveMemoForSmallNums(n-2);
 }
 
-void test_fib_recursive_memo(void)
+void testFibRecursiveMemoForSmallNums(void)
 {
     print_func_name();
-    printf("\tfib_recursive_memo(%d): %lld\n", NUM, fib_recursive_memo(NUM));
-    MEAS_RUNTIME(fib_recursive_memo, NUM); 
+    printf("\tfib(%d): %lld\n", NUM, fibRecursiveMemoForSmallNums(NUM));
+    MEAS_RUNTIME(fibRecursiveMemoForSmallNums, NUM); 
 }
 
 /*****************************************************************************
- * Function: hugeFib_recursive(int n)
+ * Function: fibRecursiveMemo(int n)
  * Description: recursion with memorization, and to deal with huge numbers that 
  *              has more than 19 digits which is maximum length of long long 
  *              storage type, we have to use some other data structures, and
@@ -244,21 +245,21 @@ void test_fib_recursive_memo(void)
  * Time Complexity: O(N)
  * Space Complexity: O(N)
  */
-ListNode* dp[100];
-ListNode* hugeFib_recursive(int n)
+ListNode* dp[2];
+ListNode* fibRecursiveMemo(int n)
 {
     if(dp[n] != NULL) 
         return dp[n];
     if(n<2) 
         return dp[n] = convertNumtoList(n);
     return 
-        dp[n] = addTwoNumbers(hugeFib_recursive(n-1), hugeFib_recursive(n-2));
+        dp[n] = addTwoNumbers(fibRecursiveMemo(n-1), fibRecursiveMemo(n-2));
 }
 
-void testFibHuge(void)
+void testFibRecursive(void)
 {
     print_func_name();
-    ListNode* head = hugeFib_recursive(NUM);
+    ListNode* head = fibRecursiveMemo(NUM);
     printf("\tfib(%d): ", NUM); printListBackward(head);
 }
 
@@ -268,7 +269,7 @@ void testFibHuge(void)
  * Time Complexity: O(N)
  * Space Complexity: O(N)
  */
-long long fib_iterative(int n)
+long long fibIterativeForSmallNums(int n)
 {
     if(n < 2) return n;
 
@@ -283,11 +284,67 @@ long long fib_iterative(int n)
     return dp[n];
 }
 
-void test_fib_iterative(void)
+void testFibIterativeForSmallNums(void)
 {
     print_func_name();
-    printf("\tfib(%d): %lld\n", NUM, fib_iterative(NUM));
-    MEAS_RUNTIME(fib_iterative, NUM); 
+    printf("\tfib(%d): %lld\n", NUM, fibIterativeForSmallNums(NUM));
+    MEAS_RUNTIME(fibIterativeForSmallNums, NUM); 
+}
+
+long long fibIterativeForSmallNumsDP(int n)
+{
+    if(n < n) return n;
+
+    int prev2 = 0, prev1 = 1, curr;
+    for(int i=2; i<n+1; i++){
+        curr = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = curr;
+    }
+    return prev1;
+}
+
+void testFibIterativeForSmallNumsDP(void)
+{
+    print_func_name();
+    printf("\tfib(%d): %lld\n", NUM, fibIterativeForSmallNumsDP(NUM));
+    MEAS_RUNTIME(fibIterativeForSmallNumsDP, NUM); 
+}
+
+ListNode* deepCopyList(ListNode* head)
+{
+    ListNode* ret = NULL;
+    ListNode* curr = head;
+    while(curr != NULL){
+        appendNode(&ret, curr->val);
+        curr = curr->next;
+    }
+    return ret;
+}
+
+ListNode* fibIterativeDP(int n)
+{
+    if(n < 2)
+        return convertNumtoList(n);
+
+    ListNode *prev2 = convertNumtoList(0);
+    ListNode* prev1 = convertNumtoList(1);
+    ListNode* curr = NULL;
+    for(int i=2; i<n+1; i++){
+        ListNode* l1 = deepCopyList(prev1);
+        ListNode* l2 = deepCopyList(prev2);
+        curr = addTwoNumbers(l1, l2);
+        prev2 = prev1; 
+        prev1 = curr;
+    }
+    return curr;
+}
+
+void testFibIterativeDP(void)
+{
+    print_func_name();
+    ListNode* head = fibIterativeDP(NUM);
+    printf("\tfib(%d): ", NUM); printListBackward(head);
 }
 
 /*****************************************************************************
@@ -297,10 +354,12 @@ int main(int argc, char* argv[])
 {
     /* testConvertNumToList(); */
     /* testAddTwoNumbers(); */
-    /* test_fib_recursive(); */
-    /* test_fib_recursive_memo(); */
-    test_fib_iterative();
-    testFibHuge();
+    /* testFibRecursiveForSmallNums(); */
+    /* testFibRecursiveMemoForSmallNums(); */
+    testFibIterativeForSmallNums();
+    testFibIterativeForSmallNumsDP();
+    testFibRecursive();
+    testFibIterativeDP();
 
     return 0;
 }

@@ -4,30 +4,35 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-A	fibonacci.c	/^long long A[10];$/;"	v
+A	fibonacci.c	/^long long A[100];$/;"	v
 AppendDigitToList	fibonacci.c	/^void AppendDigitToList(ListNode** head, int digit)$/;"	f
 ListNode	fibonacci.c	/^typedef struct ListNode$/;"	s	file:
 ListNode	fibonacci.c	/^}ListNode;$/;"	t	typeref:struct:ListNode	file:
 MEAS_RUNTIME	debug.h	21;"	d
-NUM	fibonacci.c	/^const int NUM = 30;$/;"	v
+NUM	fibonacci.c	/^const int NUM = 10;$/;"	v
 PROJECT_PATH_DEBUG_H	debug.h	13;"	d
-addTwoNumbers	fibonacci.c	/^ListNode* addTwoNumbers(ListNode* l1, ListNode* l2, ListNode* head) $/;"	f
-addTwoNumbersCombine	fibonacci.c	/^ListNode* addTwoNumbersCombine(ListNode* l1, ListNode* l2) $/;"	f
+addTwoNumbers	fibonacci.c	/^ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) $/;"	f
 appendNode	fibonacci.c	/^void appendNode(ListNode** head, int n)$/;"	f
 convertNumtoList	fibonacci.c	/^ListNode* convertNumtoList(long long num)$/;"	f
-dp	fibonacci.c	/^ListNode* dp[100];$/;"	v
-fib	fibonacci.c	/^ListNode* fib(int n)$/;"	f
-fib_iterative	fibonacci.c	/^long long fib_iterative(int n)$/;"	f
-fib_recursive	fibonacci.c	/^long long fib_recursive(int n)$/;"	f
-fib_recursive_memo	fibonacci.c	/^long long fib_recursive_memo(int n)$/;"	f
+deepCopyList	fibonacci.c	/^ListNode* deepCopyList(ListNode* head)$/;"	f
+dp	fibonacci.c	/^ListNode* dp[2];$/;"	v
+fibIterativeDP	fibonacci.c	/^ListNode* fibIterativeDP(int n)$/;"	f
+fibIterativeForSmallNums	fibonacci.c	/^long long fibIterativeForSmallNums(int n)$/;"	f
+fibIterativeForSmallNumsDP	fibonacci.c	/^long long fibIterativeForSmallNumsDP(int n)$/;"	f
+fibRecursiveForSmallNums	fibonacci.c	/^long long fibRecursiveForSmallNums(int n)$/;"	f
+fibRecursiveMemo	fibonacci.c	/^ListNode* fibRecursiveMemo(int n)$/;"	f
+fibRecursiveMemoForSmallNums	fibonacci.c	/^long long fibRecursiveMemoForSmallNums(int n)$/;"	f
 main	fibonacci.c	/^int main(int argc, char* argv[])$/;"	f
 next	fibonacci.c	/^    struct ListNode* next;$/;"	m	struct:ListNode	typeref:struct:ListNode::ListNode	file:
 printList	fibonacci.c	/^void printList(ListNode* head)$/;"	f
+printListBackward	fibonacci.c	/^void printListBackward(ListNode* head)$/;"	f
 print_func_name	debug.h	15;"	d
 testAddTwoNumbers	fibonacci.c	/^void testAddTwoNumbers(void)$/;"	f
 testConvertNumToList	fibonacci.c	/^void testConvertNumToList(void)$/;"	f
-testFib	fibonacci.c	/^void testFib(void)$/;"	f
-test_fib_iterative	fibonacci.c	/^void test_fib_iterative(void)$/;"	f
-test_fib_recursive	fibonacci.c	/^void test_fib_recursive(void)$/;"	f
-test_fib_recursive_memo	fibonacci.c	/^void test_fib_recursive_memo(void)$/;"	f
+testFibIterativeDP	fibonacci.c	/^void testFibIterativeDP(void)$/;"	f
+testFibIterativeForSmallNums	fibonacci.c	/^void testFibIterativeForSmallNums(void)$/;"	f
+testFibIterativeForSmallNumsDP	fibonacci.c	/^void testFibIterativeForSmallNumsDP(void)$/;"	f
+testFibRecursive	fibonacci.c	/^void testFibRecursive(void)$/;"	f
+testFibRecursiveForSmallNums	fibonacci.c	/^void testFibRecursiveForSmallNums(void)$/;"	f
+testFibRecursiveMemoForSmallNums	fibonacci.c	/^void testFibRecursiveMemoForSmallNums(void)$/;"	f
 val	fibonacci.c	/^    int val;$/;"	m	struct:ListNode	file:
